@@ -6,6 +6,8 @@ const dbConfig = require('./config/db.config');
 const cors = require('cors');
 const productRoutes = require('./app/routes/product.routes');
 const imageRoutes = require('./app/routes/image.routes');
+const graphqlHTTP = require('express-graphql');
+const schema = require('./graphql/Schema');
 
 mongoose.connect(dbConfig.url)
   .then(() => {
@@ -28,6 +30,11 @@ app.use(function (req, res, next) {
   }
   return next();
 });
+
+app.use('/graphql', cors(), graphqlHTTP({
+  schema: schema,
+  graphiql: true
+}));
 
 app.use('/product', cors(), productRoutes);
 app.use('/image', cors(), imageRoutes);
